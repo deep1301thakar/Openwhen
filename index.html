@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Open When, P 💌</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Georgia,serif;
+ background:linear-gradient(145deg,#fff3f6,#f7dce7,#fff8f0);
+ color:#78485b;
+ text-align:center;
+}
+header{padding:45px 18px 25px}
+h1{font-size:clamp(2.5rem,8vw,3.8rem);margin:12px}
+header p{line-height:1.8;max-width:450px;margin:auto}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:13px;
+ max-width:720px;
+ margin:20px auto;
+ padding:15px;
+}
+.envelope{
+ background:#fffafc;
+ border:1px solid #f3d3df;
+ border-radius:18px;
+ padding:19px 10px;
+ cursor:pointer;
+ box-shadow:0 5px 15px #9e587319;
+ transition:.2s;
+ min-height:125px;
+}
+.envelope:hover{transform:translateY(-4px)}
+.envelope span{font-size:35px;display:block;margin-bottom:8px}
+.envelope strong{font-size:14px;line-height:1.5}
+footer{padding:35px 15px 55px}
+.overlay{
+ display:none;
+ position:fixed;
+ inset:0;
+ z-index:10;
+ background:#492637b8;
+ padding:18px;
+ align-items:center;
+ justify-content:center;
+}
+.letter{
+ background:#fff9f6;
+ border-radius:25px;
+ padding:30px 24px;
+ width:100%;
+ max-width:480px;
+ max-height:85vh;
+ overflow-y:auto;
+ box-shadow:0 15px 50px #0003;
+ animation:appear .3s ease;
+}
+@keyframes appear{
+ from{opacity:0;transform:scale(.88)}
+ to{opacity:1;transform:scale(1)}
+}
+.letter h2{color:#b45e80}
+.letter p{line-height:1.9;white-space:pre-line}
+button{
+ border:0;
+ border-radius:30px;
+ background:#d982a3;
+ color:white;
+ padding:13px 24px;
+ font-size:15px;
+ cursor:pointer;
+ margin:8px;
+}
+button:hover{background:#b96384}
+.small{font-size:12px;color:#a87589}
+</style>
+</head>
+<body>
+
+<header>
+ <div style="font-size:48px">🌷💌🌷</div>
+ <h1>Open When, you feel 💞</h1>
+ <p>
+  Hey P, all this letters are written with my love.
+  Whenever you need me, choose an envelope.
+  There's always a piece of my heart waiting for you.
+ </p>
+ <!--<p style="margin-top:18px;font-style:italic">
+  
+ </p -->
+</header>
+
+<main class="grid" id="envelopes"></main>
+
+<footer>
+ <div style="font-size:32px">💗</div>
+ <p>No matter which letter you open, remember:</p>
+ <h2>You're always loved, P.</h2>
+ <p class="small">A little world made just for you ♡</p>
+</footer>
+
+<div class="overlay" id="overlay" onclick="closeOutside(event)">
+ <article class="letter">
+  <div style="font-size:38px">💌</div>
+  <h2 id="letterTitle"></h2>
+  <p id="letterText"></p>
+  <p style="color:#b45e80;font-style:italic">
+   Forever yours, ❤️
+  </p>
+  <button onclick="closeLetter()">Close my letter ♡</button>
+ </article>
+</div>
+
+<script>
+const letters = [
+["💗","When you miss me",
+"My love, I miss you too. More than I can explain. I wish I could appear beside you, hold your hand and tell you how much I've missed you. Until that day, imagine me giving you the longest hug. We're a little far apart, but you're always close to my heart."],
+
+["🫂","When you need a hug",
+"Come here, my P. Imagine my arms wrapped around you, holding you close. You don't have to say anything or explain anything. Just rest for a moment. I wish I could make this hug real. One day, I'll make up for every hug we've missed."],
+
+["😘","When you need a kiss",
+"Sending you a forehead kiss, a cheek kiss, and a thousand little kisses. 💋 If I were beside you right now, I wouldn't let you go without reminding you how beautiful you are."],
+
+["❤️","When you want to feel loved",
+"I hope you never question your place in my heart. You're important to me in ways I sometimes struggle to put into words. I love your presence, your personality, your little habits and everything that makes you YOU."],
+
+["🥺","When you need reassurance",
+"Hey, my love. Take a breath. You don't have to be perfect to be loved. You don't have to pretend to be okay all the time. I want the happy version of you and the tired version of you. I'm here to listen, understand and keep choosing us."],
+
+["🌷","When you want to know how beautiful you are",
+"I wish you could borrow my eyes for a moment. You would see the girl who makes my heart smile without even trying. And it's not only your face. It's your expressions, your laughter, your kindness and the little things you probably don't even notice."],
+
+["🌧️","When you're sad",
+"My sweet girl, I'm sorry today feels heavy. Please don't feel like you have to hide your sadness. Take your time. Be gentle with yourself. I wish I could sit beside you, hold your hand and remind you that difficult days don't last forever."],
+
+["☁️","When you've had a bad day",
+"Leave the worries here for a little while, okay? You've done enough today. I'm proud of you for making it through. Eat something, drink some water, get comfortable and remember that tomorrow is another chance."],
+
+["🌙","When you feel lonely",
+"Even when we're not talking, you're not forgotten. Somewhere in my day, there's always a thought of you. I hope you remember that you have someone who genuinely wants to share life's little moments with you."],
+
+["🦋","When you're overthinking",
+"Hey, pretty girl. Let's slow those thoughts down. You don't need to figure everything out tonight. You deserve peace, not endless worries. Talk to me whenever you need to. I want us to understand each other, not assume the worst."],
+
+["🎀","When you feel insecure",
+"I wish you could see how lovely you are without comparing yourself to anyone. You don't need to change yourself to deserve love. You're already someone incredibly special to me. Never forget that."],
+
+["🌻","When you feel like giving up",
+"Please remember how far you've come. I'm proud of the effort you make, even when nobody sees it. Take a break if you need one. Start again when you're ready. I'll always be cheering for you."],
+
+["🍓","When you're bored",
+"HELLOOO, pretty girl! 😂 I hope you're smiling now. Here's your reminder to drink some water, eat something delicious and stop being so cute for at least five minutes. Actually, don't. I like you exactly like this."],
+
+["😂","When you need a reason to laugh",
+"Official announcement: You have been charged with stealing someone's heart, occupying approximately 99% of his thoughts and being ridiculously adorable. Your sentence is a lifetime of receiving forehead kisses. No appeals allowed. 😂❤️"],
+
+["😠","When you're angry with me",
+"Okay, my love. I know I won't always get everything right. If I've hurt you, I want to understand and make things better. Your feelings matter to me. Let's talk honestly, listen to each other and never let pride become bigger than our love."],
+
+["🥰","When you want attention",
+"EXCUSE ME, MY PRETTY GIRL! You have my attention. All of it. Here's your daily reminder that you're cute, adorable, precious and probably reading this with a little smile. Sending extra kisses because you deserve them. 💋"],
+
+["😴","When you can't sleep",
+"Close your eyes, take a slow breath and imagine a peaceful place where it's just us. No distance, no worries, no rushing. Just a quiet moment together. I hope you sleep peacefully, my love. Sweet dreams."],
+
+["💍","When you dream about our wedding",
+"Sometimes I imagine that day. Seeing you walking towards me, knowing that all the waiting, distance and longing brought us to that moment. I don't know every detail of our future, but I know I want to build it with you."],
+
+["🫶","When you wish I were beside you",
+"I wish I could be there too. I'd sit next to you, hold your hand, play with your hair and find a hundred excuses to stay close. One day, being together won't be something we have to imagine."],
+
+["🏡","When you imagine our first home",
+"I imagine a little home filled with laughter, silly conversations, warm meals and ordinary mornings. Maybe we'll disagree about what to watch or who makes the better Chai. But the best part will always be coming home to you."],
+
+["🎂","On your birthday",
+"Happy birthday, my P! I wish I could be there to hug you and celebrate every little thing that makes you wonderful. I hope this new year brings you happiness, opportunities and beautiful memories. And I hope it brings us closer to our forever. I love you, birthday girl. ❤️"],
+
+["✨","When you want a surprise",
+"Surprise! You just received one extra reason to smile. You are loved, appreciated, admired and endlessly special to someone. And that someone is currently smiling because he imagined you opening this letter. 💗"],
+
+["💞","When you want to know why I chose you",
+"I didn't choose you because everything would always be easy. I chose you because there's something about you that makes me want to keep showing up, keep learning and keep building something meaningful. I want you, not just the easy days."],
+
+["♾️","When you need a reminder that you're my forever girl",
+"My P, I cannot promise a perfect life. But I want to promise effort, honesty, patience, laughter and a love that keeps growing. I want to celebrate your victories, support you through difficult days and keep making memories with you. If I had to choose again, I'd still choose you. In every lifetime. ❤️"],
+
+["💌","When you want to know how much I love you",
+"If I could put every feeling I have for you into words, this letter would never end. You're my favorite person, my sweetest thought and someone I genuinely want beside me in the future. Thank you for being you. I love you, P. Always and always."]
+];
+
+const grid=document.getElementById("envelopes");
+
+letters.forEach((letter,i)=>{
+ const item=document.createElement("div");
+ item.className="envelope";
+ item.innerHTML=`
+  <span>${letter[0]}</span>
+  <strong>Open when ${letter[1].replace(/^When /,"").toLowerCase()}</strong>
+  <div class="small">A letter for you ♡</div>
+ `;
+ item.onclick=()=>openLetter(i);
+ grid.appendChild(item);
+});
+
+function openLetter(i){
+ document.getElementById("letterTitle").innerText=
+  "Open when "+letters[i][1].replace(/^When /,"").toLowerCase();
+ document.getElementById("letterText").innerText=letters[i][2];
+ document.getElementById("overlay").style.display="flex";
+}
+function closeLetter(){
+ document.getElementById("overlay").style.display="none";
+}
+function closeOutside(e){
+ if(e.target.id==="overlay")closeLetter();
+}
+</script>
+</body>
+</html>
